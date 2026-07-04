@@ -1,4 +1,5 @@
-from flask import Flask, render_template, request  
+from flask import Flask, render_template, request 
+import sqlite3 
 
 app = Flask(__name__)
 
@@ -19,10 +20,33 @@ def contact():
 
 @app.route("/submit", methods=["POST"])
 def submit():
+    print("Submit function called")
+
     date = request.form["date"]
     category = request.form["category"]
     amount = float(request.form["amount"])
     description = request.form["description"]
+
+    connection = sqlite3.connect("expenses.db")
+    cursor = connection.cursor()
+
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS expenses (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        date TEXT,
+        category TEXT,
+        amount REAL,
+        description TEXT
+    )
+    """)
+
+    cursor.execute("""
+    INSERT INTO expenses (date, category, amount, description)
+    VALUES (?, ?, ?, ?)
+    """, (date, category, amount, description))
+
+    connection.commit()
+    connection.close()
 
     print(date)
     print(category)
