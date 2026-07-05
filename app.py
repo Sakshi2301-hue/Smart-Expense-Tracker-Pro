@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request 
 import sqlite3 
+from flask import redirect
 
 app = Flask(__name__)
 
@@ -59,6 +60,30 @@ def submit():
     print(description)
 
     return "Form Received!"
+
+# @app.route("/delete/<int:id>")
+# def delete(id):
+#     connection.commit()
+#     connection.close()
+#     return f"Deleting ID: {id}"
+#     return redirect("/")
+
+@app.route("/delete/<int:id>")
+def delete(id):
+
+    connection = sqlite3.connect("expenses.db")
+    cursor = connection.cursor()
+
+    cursor.execute("""
+    DELETE FROM expenses
+    WHERE id = ?;
+    """, (id,))
+
+    connection.commit()
+    connection.close()
+
+    return redirect("/")
+    
 
 
 if __name__ == "__main__":
