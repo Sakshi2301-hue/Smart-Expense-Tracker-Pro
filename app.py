@@ -6,7 +6,12 @@ app = Flask(__name__)
 
 @app.route("/")
 def home():
-    return render_template("index.html")
+    connection = sqlite3.connect("expenses.db")
+    cursor = connection.cursor()
+    cursor.execute("SELECT * FROM expenses")
+    expenses = cursor.fetchall()
+    connection.close()
+    return render_template("index.html", expenses=expenses)
 
 
 @app.route("/about")

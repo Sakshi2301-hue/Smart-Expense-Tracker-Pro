@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
+
 <body class="bg-light">
 
     <div class="container mt-5">
@@ -31,40 +33,61 @@
                 </div>
             </div>
 
-           <h3>Add New Expense</h3>
-<form action="/submit" method="POST"> 
-    <label for="date">Date</label>
-    <input type="date" id="date" name="date" required>
+            <h3>Add New Expense</h3>
+            <form action="/submit" method="POST">
+                <label for="date">Date</label>
+                <input type="date" id="date" name="date" required>
 
-    <br><br>
+                <br><br>
 
-    <label for="category">Category</label>
-    <select id="category" name="category" required>
-        <option value="" disabled selected>-- Select Category --</option>
-        <option value="food">Food & Dining</option>
-        <option value="transport">Transportation</option>
-        <option value="shopping">Shopping</option>
-        <option value="bills">Bills & Utilities</option>
-        <option value="entertainment">Entertainment</option>
-        <option value="others">Others</option>
-    </select>
+                <label for="category">Category</label>
+                <select id="category" name="category" required>
+                    <option value="" disabled selected>-- Select Category --</option>
+                    <option value="food">Food & Dining</option>
+                    <option value="transport">Transportation</option>
+                    <option value="shopping">Shopping</option>
+                    <option value="bills">Bills & Utilities</option>
+                    <option value="entertainment">Entertainment</option>
+                    <option value="others">Others</option>
+                </select>
 
-    <br><br>
+                <br><br>
 
-    <label for="amount">Amount</label>
-    <input type="number" id="amount" name="amount" placeholder="Enter amount" step="0.01" min="0" required>
+                <label for="amount">Amount</label>
+                <input type="number" id="amount" name="amount" placeholder="Enter amount" step="0.01" min="0" required>
 
-    <br><br>
+                <br><br>
 
-    <label for="description">Description</label>
-    <textarea id="description" name="description" placeholder="Where you spent...."></textarea>
+                <label for="description">Description</label>
+                <textarea id="description" name="description" placeholder="Where you spent...."></textarea>
 
-    <br><br>
+                <br><br>
 
-    <button type="submit">Submit</button>
-</form>
+                <button type="submit">Submit</button>
+            </form>
+
+            <h3 class="mt-4">All Expenses</h3>
+
+            <table class="table table-bordered">
+                <tr>
+                    <th>Date</th>
+                    <th>Category</th>
+                    <th>Amount</th>
+                    <th>Description</th>
+                </tr>
+
+                {% for expense in expenses %}
+                <tr>
+                    <td>{{ expense[1] }}</td>
+                    <td>{{ expense[2] }}</td>
+                    <td>{{ expense[3] }}</td>
+                    <td>{{ expense[4] }}</td>
+                </tr>
+                {% endfor %}
+            </table>
         </div>
     </div>
 
 </body>
+
 </html>
