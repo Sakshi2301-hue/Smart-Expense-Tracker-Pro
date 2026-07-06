@@ -33,63 +33,103 @@
                 </div>
             </div>
 
+            {% if expense %}
+            <h3>Edit Expense</h3>
+            {% else %}
             <h3>Add New Expense</h3>
-            <form action="/submit" method="POST">
-                <label for="date">Date</label>
-                <input type="date" id="date" name="date" required>
+            {% endif %}
+            {% if expense %}
+            <form action="/update/{{ expense[0] }}" method="POST">
+                {% else %}
+                <form action="/submit" method="POST">
+                    {% endif %}
+                    <label for="date">Date</label>
+                    {% if expense %}
+                    <input type="date" id="date" name="date" value="{{ expense[1] }}" required>
+                    {% else %}
+                    <input type="date" id="date" name="date" required>
+                    {% endif %}
 
-                <br><br>
+                    <br><br>
 
-                <label for="category">Category</label>
-                <select id="category" name="category" required>
-                    <option value="" disabled selected>-- Select Category --</option>
-                    <option value="food">Food & Dining</option>
-                    <option value="transport">Transportation</option>
-                    <option value="shopping">Shopping</option>
-                    <option value="bills">Bills & Utilities</option>
-                    <option value="entertainment">Entertainment</option>
-                    <option value="others">Others</option>
-                </select>
+                    <label for="category">Category</label>
+                    <select id="category" name="category" required>
+                        <option value="" disabled selected>-- Select Category --</option>
+                        <option value="food" {% if expense and expense[2]=="food" %}selected{% endif %}>
+                            Food & Dining
+                        </option>
 
-                <br><br>
+                        <option value="transport" {% if expense and expense[2]=="transport" %}selected{% endif %}>
+                            Transportation
+                        </option>
 
-                <label for="amount">Amount</label>
-                <input type="number" id="amount" name="amount" placeholder="Enter amount" step="0.01" min="0" required>
+                        <option value="shopping" {% if expense and expense[2]=="shopping" %}selected{% endif %}>
+                            Shopping
+                        </option>
 
-                <br><br>
+                        <option value="bills" {% if expense and expense[2]=="bills" %}selected{% endif %}>
+                            Bills & Utilities
+                        </option>
 
-                <label for="description">Description</label>
-                <textarea id="description" name="description" placeholder="Where you spent...."></textarea>
+                        <option value="entertainment" {% if expense and expense[2]=="entertainment" %}selected{% endif
+                            %}>
+                            Entertainment
+                        </option>
 
-                <br><br>
+                        <option value="others" {% if expense and expense[2]=="others" %}selected{% endif %}>
+                            Others
+                        </option>
+                    </select>
 
-                <button type="submit">Submit</button>
-            </form>
+                    <br><br>
 
-            <h3 class="mt-4">All Expenses</h3>
+                    <label for="amount">Amount</label>
+                    {% if expense %}
+                    <input type="number" name="amount" value="{{ expense[3] }}" placeholder="Enter amount" required>
+                    {% else %}
+                    <input type="number" name="amount" placeholder="Enter amount" required>
+                    {% endif %}
 
-            <table class="table table-bordered">
-                <tr>
-                    <th>Action</th>
-                    <th>Date</th>
-                    <th>Category</th>
-                    <th>Amount</th>
-                    <th>Description</th>
-                </tr>
+                    <br><br>
 
-                {% for expense in expenses %}
-                <tr>
-                    <td>{{ expense[1] }}</td>
-                    <td>{{ expense[2] }}</td>
-                    <td>{{ expense[3] }}</td>
-                    <td>{{ expense[4] }}</td>
-                    <td>
-                       <a href="/delete/{{ expense[0] }}">Delete</a>    
-                    </td>
+                    <label for="description">Description</label>
+                    {% if expense %}
+                    <input type="text" name="description" value="{{ expense[4] }}" placeholder="Where you spent...."
+                        required>
+                    {% else %}
+                    <input type="text" name="description" placeholder="Where you spent...." required>
+                    {% endif %}
 
-                </tr>
-                {% endfor %}
-            </table>
+                    <br><br>
+
+                    <button type="submit">Submit</button>
+                </form>
+
+                <h3 class="mt-4">All Expenses</h3>
+
+                <table class="table table-bordered">
+                    <tr>
+                        <th>Action</th>
+                        <th>Date</th>
+                        <th>Category</th>
+                        <th>Amount</th>
+                        <th>Description</th>
+                    </tr>
+
+                    {% for expense in expenses %}
+                    <tr>
+                        <td>{{ expense[1] }}</td>
+                        <td>{{ expense[2] }}</td>
+                        <td>{{ expense[3] }}</td>
+                        <td>{{ expense[4] }}</td>
+                        <td>
+                            <a href="/edit/{{ expense[0] }}">Edit</a> |
+                            <a href="/delete/{{ expense[0] }}">Delete</a>
+                        </td>
+
+                    </tr>
+                    {% endfor %}
+                </table>
         </div>
     </div>
 

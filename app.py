@@ -59,20 +59,39 @@ def submit():
     print(amount)
     print(description)
 
-    return "Form Received!"
+    return redirect("/")
 
-# @app.route("/delete/<int:id>")
-# def delete(id):
-#     connection.commit()
-#     connection.close()
-#     return f"Deleting ID: {id}"
-#     return redirect("/")
+@app.route("/update/<int:id>", methods=["POST"])
+def update(id):
+
+    date = request.form["date"]
+    category = request.form["category"]
+    amount = float(request.form["amount"])
+    description = request.form["description"]
+
+    connection = sqlite3.connect("expenses.db")
+    cursor = connection.cursor()
+
+    cursor.execute("""
+    UPDATE expenses
+    SET
+        date = ?,
+        category = ?,
+        amount = ?,
+        description = ?
+    WHERE id = ?;
+    """, (date, category, amount, description, id))
+
+    connection.commit()
+    connection.close()
+
+    return redirect("/")
 
 @app.route("/delete/<int:id>")
 def delete(id):
 
     connection = sqlite3.connect("expenses.db")
-    cursor = connection.cursor()
+    cursor = connection.cursor()      
 
     cursor.execute("""
     DELETE FROM expenses
@@ -84,6 +103,29 @@ def delete(id):
 
     return redirect("/")
     
+@app.route("/edit/<int:id>")
+def edit(id):
+
+    connection = sqlite3.connect("expenses.db")
+    cursor = connection.cursor()
+
+    cursor.execute("""
+    SELECT * FROM expenses
+    WHERE id = ?;
+    """, (id,))
+
+    expense = cursor.fetchone()
+
+    cursor.execute("SELECT * FROM expenses")
+    expenses = cursor.fetchall()
+
+    connection.close()
+
+    return render_template(
+        "index.html",
+        expense=expense,
+        expenses=expenses
+    )
 
 
 if __name__ == "__main__":
