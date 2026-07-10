@@ -9,10 +9,40 @@ app = Flask(__name__)
 def home():
     connection = sqlite3.connect("expenses.db")
     cursor = connection.cursor()
+
+    # Fetch all expenses
     cursor.execute("SELECT * FROM expenses")
     expenses = cursor.fetchall()
+
+    # Calculate total expense
+    cursor.execute("""
+    SELECT SUM(amount)
+    FROM expenses;
+    """)
+
+    total = cursor.fetchone()
+
+    # Handle empty database
+    total_expense = total[0] or 0
+
+    # Temporary income
+    total_income = 0
+
+    # Calculate balance
+    balance = total_income - total_expense
+
+    # Close database connection
     connection.close()
-    return render_template("index.html", expenses=expenses)
+
+    return render_template(
+        "index.html",
+        expenses=expenses,
+        total_expense=total_expense,
+        total_income=total_income,
+        balance=balance
+    )
+    
+
 
 
 @app.route("/about")
@@ -129,4 +159,4 @@ def edit(id):
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True)    
